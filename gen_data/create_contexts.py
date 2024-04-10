@@ -9,7 +9,7 @@ import argparse
 import string
 import random
 from templates.context_gen_template import template_1
-api_key="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"
+api_key="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"
 openai.api_key=api_key
 
 def encode_prompt(prompt_instructions):
