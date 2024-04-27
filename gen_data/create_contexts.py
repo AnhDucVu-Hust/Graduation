@@ -61,9 +61,9 @@ if __name__=="__main__":
         help="The number of requests to send to GPT3 at a time."
     )
     args = parser.parse_args()
-    seed_contexts = [json.loads(l) for l in open("./data/seed_contexts.jsonl","r",encoding="UTF-8")]
+    seed_contexts = [json.loads(l) for l in open("../data/seed_contexts.jsonl", "r", encoding="UTF-8")]
     seed_instruction = [t["instruction"] for t in seed_contexts]
-    output_dir = "./data/generated_contexts/"
+    output_dir = "../data/generated_contexts/"
     os.makedirs(output_dir,exist_ok=True)
     machine_contexts = []
     if os.path.exists(os.path.join(output_dir,"generated_contexts_gpt.jsonl")):

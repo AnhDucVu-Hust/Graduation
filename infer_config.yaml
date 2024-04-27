@@ -1,0 +1,16 @@
+problem: abz5
+model: gpt
+generation_config:
+  temperature: 0.5
+  top_p : 0.6
+  frequency_penalty: null
+  max_tokens: 1000
+
+instruction: |
+  Act as an genetic computation program, you will help people to solve the problem with genetic algorithm
+  I will give you a Job Shop Scheduling Problem (JSSP) and  10 solutions for it.
+  The solution will be encoded as a sequence of jobs, the ith occurrence of the job corresponding to the ith operation. Create the next population for me.
+  Each solution will be put between <solution> and </solution>
+  Operation matrix:
+
+num_step: 10

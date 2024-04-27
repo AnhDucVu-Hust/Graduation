@@ -49,4 +49,16 @@ class Problem:
         if self.optimum and show_optimum:
             print("Optimum value: ",str(self.optimum))
 
-
+def extract_from_problem(problem):
+    #machines = [f'Machine {i}' for i in range(problem['machines'])]
+    if 'optimum' in problem.keys():
+        optimum = problem['optimum']
+    else:
+        optimum = None
+    operation_matrix = []
+    for job in problem['details']:
+        tasks = job['tasks']
+        operation = [(task['machine_id'],task['processing_time']) for task in tasks]
+        operation_matrix.append(operation)
+    #print(operation_matrix)
+    return Problem(name = problem["name"],operation_matrix=operation_matrix,optimum=optimum)

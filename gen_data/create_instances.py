@@ -5,7 +5,7 @@ import time
 from utils import  *
 import json
 from templates.context_gen_template import template_instances,prompt_instance
-with open("./data/jssp/jssp.json","r",encoding="UTF-8") as f:
+with open("../data/jssp/jssp.json", "r", encoding="UTF-8") as f:
     data = json.load(f)
 openai.api_key="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"
 def response_parser(response):
@@ -45,10 +45,10 @@ def create_prompt(context,param):
     return prompt
 client = OpenAI()
 contexts=[]
-with open("data/generated_contexts/generated_contexts_gpt.jsonl", 'r') as json_file:
+with open("../data/generated_contexts/generated_contexts_gpt.jsonl", 'r') as json_file:
     for line in json_file:
         contexts.append(json.loads(line))
-instance_file_path = './data/instaces/'
+instance_file_path = '../data/instaces/'
 os.makedirs(instance_file_path,exist_ok=True)
 if os.path.exists(os.path.join(instance_file_path,"instances_v2.jsonl")):
     with open(os.path.join(instance_file_path,"instances_v2.jsonl"),"r",encoding="UTF-8") as f:

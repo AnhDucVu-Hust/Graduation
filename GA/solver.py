@@ -109,13 +109,15 @@ class PSO(Genetic_Algorithm):
         self.w=w
         self.pbest = []
         self.gbest = None
-    def mutation(self,genome_encoding):
+        self.local_optimum = []
+        self.ga_operations = [[]]
+    def mutation(self,genome_encoding,id):
         index1, index2 = random.sample(range(len(genome_encoding)), 2)
         genome_encoding[index1], genome_encoding[index2] = genome_encoding[index2], genome_encoding[index1]
+        self.ga_operations[-1].append({'mutation':[id,index1,index2]})
         return genome_encoding
     def crossover(self,genome_enc1,genome_enc2):
         num_job = len(self.jobs)
-        num_machine = len(self.machines)
         job_ids = list(range(num_job))
         sample_size = random.randint(1,num_job)
         random.shuffle(job_ids)
@@ -132,9 +134,10 @@ class PSO(Genetic_Algorithm):
         return temp
     def solve(self,num_steps=100):
         initial = self.initial_solution(len(self.jobs), len(self.machines), self.population_size)
-
         # print(initial_genomes)
         population = [Genome(self.problem, genome) for genome in initial]
+        best_score = min(population, key=lambda x: x.score).score
+        self.local_optimum.append(best_score)
         population_str = [','.join([str(a) for a in x.solution]) for x in population]
         self.pbest = population
         min_value = population[0]
@@ -162,17 +165,21 @@ class PSO(Genetic_Algorithm):
         for id,x in enumerate(genome_enc):
             mut_genome = x
             if np.random.randn()> self.c1:
-                mut_genome = self.mutation(x)
+                mut_genome = self.mutation(x,id)
             pbest = self.pbest[id]
             if np.random.randn()> self.c2:
                 mut_genome = self.crossover(mut_genome,pbest.solution)
             if np.random.randn() > self.w:
                 mut_genome = self.crossover(mut_genome,self.gbest.solution)
             new_pop.append(mut_genome)
+        genomes = [Genome(self.problem,solution=x) for x in new_pop]
+        best_score = min(genomes, key=lambda x: x.score).score
         population_str = [','.join([str(a) for a in x]) for x in new_pop]
         #print('\n'.join([x for x in population_str]))
         #print("------------")
         self.populations.append(population_str)
-        return [Genome(self.problem,solution=x) for x in new_pop]
+        self.local_optimum.append(best_score)
+        self.ga_operations.append([])
+        return genomes
 
 
