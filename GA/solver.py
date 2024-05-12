@@ -1,9 +1,10 @@
-#from GA.params import *
+from params import *
 from typing import List
 import numpy as np
 import random
 from genome import Genome
 from abc import ABC, abstractmethod
+
 class Genetic_Algorithm(ABC):
     def __init__(self,problem,population_size):
         self.problem = problem
@@ -39,6 +40,7 @@ class Genetic_Algorithm(ABC):
 class GA(Genetic_Algorithm):
     def __init__(self,problem,population_size):
         super().__init__(problem,population_size)
+        self.metric = []
     def mutation(self,genome:Genome):
         genome = genome.solution.copy()
         index1,index2 = random.sample(range(len(genome)),2)
@@ -75,7 +77,7 @@ class GA(Genetic_Algorithm):
     def _step(self,population):
         parents = self.tournament_selection(population, int(len(population)/ 2))
         children = []
-        for i in range(0, len(parents), 2):
+        for i in range(0, len(parents)-1, 2):
             child1, child2 = self.crossover(parents[i], parents[i + 1])
             children.extend([child1, child2])
 
@@ -84,13 +86,13 @@ class GA(Genetic_Algorithm):
         parents.extend(children)
         population = parents
         best_score = min(population, key=lambda x: x.score)
-        print(best_score.score)
+
+        self.metric.append(best_score.score)
         population_str = [','.join([str(a) for a in x.solution]) for x in population]
         #for id in range(len(population)):
         #    population_str[id] += "-" + str(population[id].score)
         # population_str = '\n'.join([x for x in population_str])
         #print('\n'.join([x for x in population_str]))
-        print("------------")
         self.populations.append(population_str)
 class DE(Genetic_Algorithm):
     def __init__(self, problem,population_size):
@@ -159,6 +161,7 @@ class PSO(Genetic_Algorithm):
             if genome.score < self.gbest.score:
                 self.gbest = genome
         print("gbest value:", self.gbest.score)
+        print("metric:",self.problem.optimum/self.gbest.score)
     def _step(self,population):
         new_pop = []
         genome_enc = [genome.solution for genome in population]
@@ -181,5 +184,9 @@ class PSO(Genetic_Algorithm):
         self.local_optimum.append(best_score)
         self.ga_operations.append([])
         return genomes
+
+def spt(problem:Problem):
+    operation_matrix = problem.operation_matrix
+    operation_id = [0 for _ in range(len(operation_matrix))]
 
 

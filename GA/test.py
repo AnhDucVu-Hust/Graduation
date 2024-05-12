@@ -18,7 +18,7 @@ with open("../data/jssp/jssp.json","r",encoding="UTF-8") as f:
     problems = json.load(f)
 
 
-
+metric = {}
 def gen_population(solver,problem,multi_step=False):
     instruction = "Act as an genetic computation program, you will help people to solve the problem with genetic algorithm.\n\nI will give you a Job Shop Scheduling Problem (JSSP) and  10 solutions for it.\n\nThe solution will be encoded as a sequence of jobs, the ith occurrence of the job corresponding to the ith operation.You need to generate 10 offspring solution for me. Each solution will be put between <solution> and </solution> \n Problem: {problem}\n"
     if len(problem.jobs)>15 or len(problem.machines)>15:
@@ -34,9 +34,12 @@ def gen_population(solver,problem,multi_step=False):
         genetic = GA(problem, population_size=10)
         genetic.solve(num_steps=250)
         populations = genetic.populations
+        metric = genetic.metric
 
     populations_str = []
     best_now = 1000000000
+    print(f"{genetic.problem.name},{metric[-1]}")
+    '''
     for id,population in enumerate(populations):
         if local_best[id] < best_now:
             population_str = '\n'.join([f"<solution>{sol}</solution>" for sol in population])
@@ -60,7 +63,10 @@ def gen_population(solver,problem,multi_step=False):
         with open(f"../data/multi_step_instruction_tuning/{solver}_{problem.name}.json","w",encoding="UTF-8") as f:
             json.dump(multi_step,f,ensure_ascii=False)
 
+    '''
+    return None
 
-    return populations_str
 for problem in problems:
-    gen_population("PSO",extract_from_problem(problem),multi_step=True)
+    gen_population("GA",extract_from_problem(problem),multi_step=True)
+    #name = problem.name
+
